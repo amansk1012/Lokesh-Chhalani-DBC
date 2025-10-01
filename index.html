@@ -2,12 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<!-- FULLSCREEN + ZOOM LOCK -->
+<!-- FULLSCREEN + ZOOM LOCK + SAFE-AREA -->
 <meta name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 
 <title>Kirti Creations — Lokesh Chhalani</title>
 <meta name="description" content="Kirti Creations digital visiting card — Lokesh Chhalani — Managing Director" />
+
+<!-- PWA hooks -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f70404">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 
 <style>
   :root{
@@ -20,46 +27,49 @@
     --gap:25px;
   }
   *{box-sizing:border-box}
-  /* FULLSCREEN CANVAS */
-  html,body{height:100%; margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:linear-gradient(180deg,#fffefe,#979595); color:var(--black); overscroll-behavior:contain}
-  body{
-    /* notch safe areas */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    min-height: 100svh;
-    touch-action: manipulation; /* stop double-tap zoom on many browsers */
+  html,body{
+    height:100%;
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    background:linear-gradient(180deg,#fffefe,#979595);
+    color:var(--black);
+    overscroll-behavior:contain;
+    overflow:hidden;                 /* no page scroll */
   }
-  /* OUTER WRAP NOW FULL SCREEN */
+  body{
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+             env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* FULLSCREEN WRAPPER */
   .wrap{
-    width:100vw; height:100svh;
-    margin:0; padding:0;
+    width:100vw;
+    height:100dvh;                   /* modern mobile */
+    height:100svh;                   /* fallback */
     display:flex; align-items:center; justify-content:center;
   }
 
-  /* ---------- card (kept your look; just sized to screen) ---------- */
+  /* CARD = full area (without breaking your style) */
   .card{
-    width: 100vw;
-    height: calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    max-width: 520px;                 /* desktop pe itna tak */
-    max-height: 900px;                /* very tall phones pe thoda margin */
+    width:min(96vw, 520px);
+    height:min(92dvh, 840px);
     border-radius:18px;
     border:1px solid rgba(255, 255, 255, 0.09);
     padding:18px;
     background:linear-gradient(180deg,#ffffff,#ffffff);
-    box-shadow: 0 24px 46px rgba(0,0,0,0.01);
-    transform: translateZ(1);
+    box-shadow: 0 24px 46px rgba(0,0,0,0.10);
+    transform: translateZ(0);
     transition: transform .22s ease, box-shadow .20s ease;
-    overflow:hidden;                  /* inner scroll ko avoid */
-    display:flex; flex-direction:column; justify-content:flex-start;
+    overflow:auto;                   /* content ke andar scroll (page nahi) */
+    -webkit-overflow-scrolling: touch;
+    display:flex; flex-direction:column; align-items:stretch;
   }
-  .card:hover{box-shadow: 0 48px 90px rgba(97, 88, 88, 0.7) }
+  .card:hover{ box-shadow:0 48px 90px rgba(97, 88, 88, 0.18) }
 
   /* ---------- logo ---------- */
   .logo-wrap{display:flex; justify-content:center; align-items:center; margin:5px 0 var(--gap)}
   .logo-frame{
-    width: clamp(180px, 72vw, 360px);
+    width: clamp(220px, 70vw, 380px);
     aspect-ratio: 1 / 1;
     max-width:100%;
     height:auto;
@@ -106,14 +116,12 @@
   .name{font-weight:900; font-size:20px; margin:0; color:var(--black)}
   .title{font-size:13px; margin:6px 0 0; color:var(--muted); font-weight:700}
 
-  /* animated company text (as-is) */
   .company-msg{ margin-top:12px; font-size:13px; color:var(--muted); text-align:center; overflow:hidden; display:inline-block; white-space:nowrap; max-width:92%; letter-spacing:0.6px; }
   .company-msg .reveal{ display:inline-block; transform: translateY(10px); opacity: 0; animation: revealUp 900ms ease forwards; animation-delay: 300ms; }
   @keyframes revealUp{ to { transform: translateY(0); opacity: 1; } }
   .company-msg:hover .reveal, .company-msg:focus .reveal { animation: revealUp 600ms ease forwards, glow 1.6s ease-in-out 0.2s infinite alternate; }
   @keyframes glow { from { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); } to { filter: drop-shadow(0 4px 18px rgba(214,40,40,0.06)); } }
 
-  /* icon row */
   .icon-row{display:flex; justify-content:center; gap:12px; margin:16px 0; flex-wrap:wrap}
   .icon{
     width:60px; height:60px; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center;
@@ -125,7 +133,6 @@
   .icon:active{ transform:scale(.98) }
   .icon:hover{ transform: translateY(-8px) scale(1.03); box-shadow:0 22px 58px rgba(0,0,0,0.14) }
 
-  /* stacked big buttons */
   .actions-col{display:flex; flex-direction:column; gap:12px; align-items:stretch; margin:6px 0 14px}
   .big-btn{
     display:inline-flex; align-items:center; gap:10px; justify-content:center;
@@ -137,7 +144,6 @@
   .big-btn img{width:18px;height:18px;display:block}
   .big-btn:hover{ transform: translateY(-6px); box-shadow:0 18px 44px rgba(0,0,0,0.12) }
 
-  /* socials */
   .socials{display:flex; gap:10px; justify-content:center; margin-top:6px}
   .socials .s{width:36px; height:36px; border-radius:8px; background:#fff; padding:6px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(0,0,0,0.06); transition:transform .12s ease}
   .socials .s img{width:20px;height:20px}
@@ -145,17 +151,7 @@
 
   .gst{margin-top:18px; text-align:center; font-weight:700; color:var(--muted); font-size:12px; padding-top:12px; border-top:1px dashed rgba(0,0,0,0.04)}
 
-  /* modal */
-  .modal-backdrop{position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:999}
-  .modal{background:#fff; padding:14px; border-radius:10px; width:92%; max-width:520px; box-shadow:0 24px 60px rgba(0,0,0,0.2)}
-  .form-row{display:flex; gap:8px; margin-bottom:8px}
-  .form-row input, textarea{flex:1; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08)}
-  .modal .actions{display:flex; gap:10px; justify-content:flex-end; margin-top:8px}
-  .btn{padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700}
-  .btn.primary{background:var(--accent); color:#fff}
-  .btn.ghost{background:#fff; border:1px solid rgba(0,0,0,0.06)}
-
-  /* responsive small screens */
+  /* small screens */
   @media (max-width:420px){
     .name{font-size:18px}
     .icon{width:52px;height:52px}
@@ -237,54 +233,51 @@
 
 <script>
   /* ===== Zoom Lock (best-effort) ===== */
-  // iOS pinch-zoom
   ['gesturestart','gesturechange','gestureend'].forEach(evt=>{
     document.addEventListener(evt, e=> e.preventDefault(), {passive:false});
   });
-  // double-tap zoom
   let lastTouchEnd=0;
   document.addEventListener('touchend', e=>{
     const now=Date.now();
     if(now-lastTouchEnd<=300){ e.preventDefault(); }
     lastTouchEnd=now;
   }, {passive:false});
-  // prevent Ctrl/Meta + wheel zoom (desktop)
   document.addEventListener('wheel', e=>{
     if(e.ctrlKey || e.metaKey){ e.preventDefault(); }
   }, {passive:false});
 
-  // pointer/touch feedback for icons & buttons (as-is)
+  // buttons feedback
   document.querySelectorAll('.icon, .big-btn, .s').forEach(el=>{
     el.addEventListener('pointerdown', ()=> el.style.transform = 'translateY(2px) scale(.995)');
     el.addEventListener('pointerup', ()=> el.style.transform = '');
     el.addEventListener('pointerleave', ()=> el.style.transform = '');
   });
 
-  // small accessible text reveal retrigger on focus (for keyboard)
+  // company text reveal retrigger for keyboard
   const reveal = document.querySelector('.company-msg .reveal');
   const companyMsg = document.querySelector('.company-msg');
   companyMsg.addEventListener('focus', ()=> {
-    reveal.style.animation = 'none';
-    void reveal.offsetWidth;
+    reveal.style.animation = 'none'; void reveal.offsetWidth;
     reveal.style.animation = 'revealUp 600ms ease forwards';
   });
 
-  // QR modal toggle
+  // QR modal
   const qrModal = document.getElementById('qrModal');
   document.getElementById('qrOpenBtn').addEventListener('click', (e)=>{
     e.preventDefault();
     qrModal.style.display = 'flex';
     qrModal.setAttribute('aria-hidden','false');
   });
-  document.getElementById('closeQr').addEventListener('click', ()=> { qrModal.style.display='none'; qrModal.setAttribute('aria-hidden','true'); });
-
-  // Save contact direct (vibrate)
-  document.getElementById('saveDirect').addEventListener('click', function(){
-    try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
+  document.getElementById('closeQr').addEventListener('click', ()=> {
+    qrModal.style.display='none';
+    qrModal.setAttribute('aria-hidden','true');
   });
 
-  // Share QR: try native share, fallback to open image
-  document.getElementById('shareQr').addEventListener('click', async function(){
+  // Save contact tiny haptic
+  document.getElementById('saveDirect').addEventListener('click', ()=>{ try{ navigator.vibrate && navigator.vibrate(30); }catch(e){} });
+
+  // Share QR
+  document.getElementById('shareQr').addEventListener('click', async ()=>{
     try{
       const resp = await fetch('qr.png');
       if(!resp.ok) throw new Error('qr missing');
@@ -294,38 +287,35 @@
         await navigator.share({files:[file], title:'Kirti Creations QR'});
       } else {
         const url = URL.createObjectURL(blob);
-        window.open(url,'_blank');
-        setTimeout(()=> URL.revokeObjectURL(url), 2000);
+        window.open(url,'_blank'); setTimeout(()=> URL.revokeObjectURL(url), 2000);
       }
-    }catch(err){
-      alert('QR image not found — please upload a file named qr.png next to this page.');
-    }
+    }catch(err){ alert('QR image not found — please upload qr.png'); }
   });
 
-  // quick icon handlers
+  // quick actions
   document.getElementById('callIcon').addEventListener('click', ()=> location.href='tel:+919099963239');
   document.getElementById('locIcon').addEventListener('click', ()=> window.open('https://maps.app.goo.gl/UzFL7CHn1MtZNGX38','_blank'));
   document.getElementById('waIcon').addEventListener('click', ()=> window.open('https://wa.me/919099963239','_blank'));
   document.getElementById('mailIcon').addEventListener('click', ()=> location.href='mailto:lokesh@kirti.cc');
   document.getElementById('webIcon').addEventListener('click', ()=> window.open('https://kirti.cc/','_blank'));
 
-  // socials: small click animation
+  // socials micro animation
   ['sInstagram','sFacebook','sLinkedin','sTelegram'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
     el.addEventListener('click', ()=> { el.style.transform='scale(.96)'; setTimeout(()=>el.style.transform='',120) });
   });
 
-  // close modals by clicking backdrop
-  document.querySelectorAll('.modal-backdrop').forEach(m=>{
-    m.addEventListener('click', (e)=>{ if(e.target===m){ m.style.display='none'; m.setAttribute('aria-hidden','true'); } });
-  });
-
   // replay reveal on load
   window.addEventListener('load', ()=> {
     const r = document.querySelector('.company-msg .reveal');
-    if(r){ r.style.animation = 'none'; void r.offsetWidth; r.style.animation = 'revealUp 900ms ease forwards'; }
+    if(r){ r.style.animation='none'; void r.offsetWidth; r.style.animation='revealUp 900ms ease forwards'; }
   });
+
+  // Register Service Worker for A2HS
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
 </script>
 </body>
 </html>
