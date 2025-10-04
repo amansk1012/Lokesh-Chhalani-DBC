@@ -10,8 +10,13 @@
   :root{ --accent:#f70404; --black:#0b0b0b; --muted:#444; }
 
   *{box-sizing:border-box}
-  html,body{height:100%; margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-            background:linear-gradient(180deg,#fffefe,#979595); color:var(--black); overscroll-behavior:contain; overflow:hidden;}
+  html,body{
+    height:100%; margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    background:linear-gradient(180deg,#fffefe,#979595);
+    color:var(--black);
+    overscroll-behavior:contain; overflow:hidden;
+  }
   body{ padding: env(safe-area-inset-top) env(safe-area-inset-right)
                  env(safe-area-inset-bottom) env(safe-area-inset-left); }
 
@@ -21,97 +26,93 @@
   .card{
     width:min(94vw, 520px);
     height:min(88vh, 780px);
-    border-radius:18px; border:1px solid rgba(0,0,0,.06);
-    background:#ffffff; box-shadow:5px 8px 40px rgba(.5,.1,.5,.8);
+    border-radius:18px;
+    border:1px solid rgba(0,0,0,.06);
+    background:#ffffff;
+    box-shadow:5px 8px 40px rgba(0,0,0,.08);
     display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-    padding:14px 14px 10px; gap:10px; overflow:hidden; /* no inner scroll */
+    padding:14px 14px 10px; gap:10px; overflow:hidden;
   }
 
-  /* --- Logo smaller so full card fits --- */
+  /* Logo */
   .logo-frame{
     width: clamp(200px, 100vw, 350px);
-    aspect-ratio:1/1; border-radius:0px; display:flex; align-items:center; justify-content:center;
+    aspect-ratio:1/1;
+    border-radius:0;
+    display:flex; align-items:center; justify-content:center;
     background: radial-gradient(ellipse at center, rgba(0,0,0,.0) 0%, rgba(0,0,0,0) 60%);
-    border:0.1px solid rgba(0,0,0,0); position:relative; overflow:hidden;
-    box-shadow: 0 8px 22px rgba(0,0,0,.0);
+    position:relative; overflow:hidden;
   }
   .logo-frame::after{
     content:""; position:absolute; inset:-8% -40%;
-    background:linear-gradient(120deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.18) 45%,rgba(255,255,255,.6) 50%,rgba(255,255,255,.0) 55%,rgba(255,255,255,0) 100%);
+    background:linear-gradient(120deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.18) 45%,rgba(255,255,255,.6) 50%,rgba(255,255,255,0) 55%,rgba(255,255,255,0) 100%);
     transform: translateX(-120%) skewX(-18deg);
     animation: shine 3.2s cubic-bezier(.25,.8,.25,1) infinite; pointer-events:none;
   }
   @keyframes shine{0%{transform:translateX(-120%) skewX(-18deg)}100%{transform:translateX(120%) skewX(-18deg)}}
   img.logo{max-width:86%; max-height:86%; display:block; object-fit:contain}
 
-   .name-box{
-    position:relative;
-    text-align:center; background:#ffffff; border-radius:14px;
-    padding:12px 14px; width:86%;
-    box-shadow:1px 10px 22px rgba(0,0,0,.06);
-    isolation:isolate;
+  /* Name + title — simple border */
+  .name-box{
+    text-align:center;
+    background:#ffffff;
+    border-radius:14px;
+    padding:12px 14px;
+    width:86%;
+    border:1px solid rgba(0,0,0,.08);
+    box-shadow:0 10px 22px rgba(0,0,0,.06);
   }
-  /* animated conic border */
-  .name-box::before{
-    content:""; position:absolute; inset:0; border-radius:14px; padding:2px;
-    background:conic-gradient(from 200deg, #f70404, #0b0b0b, #ffffff, #f70404);
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    animation: borderFlow 6s linear infinite;
-  }
-  .name-box::after{
-    content:""; position:absolute; inset:-6px; border-radius:18px;
-    background: radial-gradient(50% 60% at 50% 0%, rgba(247,4,4,.18), transparent 60%);
-    filter: blur(12px); z-index:-1;
-  }
-  @keyframes borderFlow{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
-
   .name{font-weight:900; font-size:21px; margin:0; letter-spacing:.25px}
   .title{font-size:13.5px; margin:4px 0 0; color:var(--muted); font-weight:800; letter-spacing:.2px}
 
   /* tagline */
   .company-msg{
-    font-size:13px; color:#0b0b0b; font-weight: 800px; /* (as-is from your code) */
+    font-size:13px; color:#0b0b0b; font-weight:800;
     background:#ffffff; padding:8px 12px; border-radius:11px;
     border:0.1px solid rgba(249, 9, 9, 0.5);
-    white-space: nowrap;            /* 🔒 1 line only */
-    max-width: 86vw;                /* prevent overflow on very small phones */
-    overflow: hidden;               /* no spill */
   }
   .company-msg .reveal{ display:inline-block; transform:translateY(10px); opacity:0; animation:revealUp .8s ease forwards; }
   @keyframes revealUp{to{transform:translateY(0);opacity:1}}
 
-  /* quick icons row */
+  /* quick icons */
   .icon-row{display:flex; gap:12px; margin-top:6px; flex-wrap:wrap; justify-content:center}
-  .icon{width:50px; height:50px; border-radius:12px; background:#ffffff; display:flex; align-items:center; justify-content:center;
-        border:1px solid rgba(0,0,0,.5); box-shadow:0 10px 26px rgba(0,0,0,.06); transition:transform .18s, box-shadow .18s; cursor:pointer;}
+  .icon{
+    width:50px; height:50px; border-radius:12px; background:#ffffff;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(0,0,0,.5);
+    box-shadow:0 10px 26px rgba(0,0,0,.06);
+    transition:transform .18s, box-shadow .18s; cursor:pointer;
+  }
   .icon img{width:30px;height:30px}
   .icon:active{ transform:scale(.98) }
   .icon:hover{ transform: translateY(-6px) scale(1.03); box-shadow:0 18px 44px rgba(0,0,0,.12) }
 
   .actions-col{display:flex; flex-direction:column; gap:10px; width:88%}
-  .big-btn{ display:flex; align-items:center; gap:10px; justify-content:center; padding:11px 12px; border-radius:12px;
-            font-weight:800; text-decoration:none; min-height:46px; transition: transform .12s, box-shadow .12s; }
+  .big-btn{
+    display:flex; align-items:center; gap:10px; justify-content:center; padding:11px 12px; border-radius:12px;
+    font-weight:800; text-decoration:none; min-height:46px; transition: transform .12s, box-shadow .12s;
+  }
   .big-btn.primary{ background:var(--accent); color:#fff; box-shadow:0 12px 30px rgba(247,4,4,.12); border:none }
   .big-btn.ghost{ background:#fff; color:#0b0b0b; border:1px solid rgba(0,0,0,.5); box-shadow:0 8px 20px rgba(0,0,0,.3) }
   .big-btn img{width:18px;height:18px}
   .big-btn:hover{ transform: translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,.12) }
 
-  /* socials row (TELEGRAM moved here & bigger) */
+  /* socials */
   .socials{display:flex; gap:14px; justify-content:center; margin-top:4px}
-  .socials .s{width:48px; height:48px; border-radius:10px; background:#fff; padding:7px;
-              display:inline-flex; align-items:center; justify-content:center;
-              border:1px solid rgba(0,0,0,.5); box-shadow:5px 11px 19px rgba(0,0,0,.3); transition:transform .12s}
+  .socials .s{
+    width:48px; height:48px; border-radius:10px; background:#fff; padding:7px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid rgba(0,0,0,.5); box-shadow:5px 11px 19px rgba(0,0,0,.3); transition:transform .12s
+  }
   .socials .s img{width:26px;height:26px}
   .socials .s:hover{ transform: translateY(-5px) }
 
   .gst{margin-top:6px; text-align:center; font-weight:800; color:var(--muted); font-size:12px; padding-top:8px; border-top:1px dashed rgba(0,0,0,.06)}
 
-  /* light modal */
+  /* modal */
   .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.48); display:none; align-items:center; justify-content:center; z-index:9999}
   .dialog{background:#fff; padding:14px; border-radius:12px; width:94%; max-width:420px; box-shadow:0 24px 60px rgba(0,0,0,.5)}
   .row{display:flex; gap:8px; margin:10px 0}
-  .row input{flex:1; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.1)}
   .row .btn{padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer}
   .btn.primary{background:#f70404; color:#fff}
   .btn.ghost{background:#ffffff; border:1px solid rgba(0,0,0,.5)}
@@ -135,13 +136,11 @@
       </div>
 
       <!-- tagline -->
-      <div class="company-msg">
-        <span id="companyTagline" class="reveal">Embroidery &amp; Textile Design — Quality &amp; Craftsmanship</span>
-      </div>
+      <div class="company-msg"><span class="reveal">Embroidery &amp; Textile Design — Quality &amp; Craftsmanship</span></div>
 
-      <!-- quick icons (Telegram removed from here) -->
+      <!-- quick icons -->
       <div class="icon-row">
-        <div class="icon" id="callIcon" title="Call"><img src="images/call.png" alt="call"/></div>
+        <div class="icon" id="callIcon" title="Call"><img src="images/ccall.png" alt="call" onerror="this.src='images/call.png'"/></div>
         <div class="icon" id="locIcon" title="Location"><img src="images/location.png" alt="location"/></div>
         <div class="icon" id="waIcon" title="WhatsApp"><img src="images/whatsapp.png" alt="whatsapp"/></div>
         <div class="icon" id="mailIcon" title="Mail"><img src="images/mail.png" alt="mail"/></div>
@@ -151,10 +150,11 @@
       <!-- actions -->
       <div class="actions-col">
         <a class="big-btn primary" id="saveContactBtn" href="#"><img src="images/contact.png" alt="save" /> Save Contact</a>
-        <a class="big-btn ghost" id="qrOpenBtn" href="#"><img src="images/qr.png" alt="qr" /> Show QR / Share</a>
+        <!-- QR icon uses root file qr.jpg -->
+        <a class="big-btn ghost" id="qrOpenBtn" href="#"><img src="qr.jpg" alt="qr" /> Show QR / Share</a>
       </div>
 
-      <!-- socials (Telegram placed here) -->
+      <!-- socials -->
       <div class="socials">
         <div class="s" id="sInstagram" title="Instagram"><img src="images/inst.jpg" alt="ig"></div>
         <div class="s" id="sFacebook" title="Facebook"><img src="images/fac.png" alt="fb"></div>
@@ -171,7 +171,8 @@
     <div class="dialog" role="dialog" aria-modal="true">
       <h3 style="margin:0">Scan or share QR</h3>
       <div style="text-align:center; margin-top:10px;">
-        <img id="qrImg" src="images/qr.png" alt="QR code" style="max-width:260px; width:70%; height:auto" onerror="this.style.display='none'"/>
+        <!-- root path qr.jpg -->
+        <img id="qrImg" src="qr.jpg" alt="QR code" style="max-width:260px; width:70%; height:auto" onerror="this.style.display='none'"/>
       </div>
       <div class="row" style="justify-content:flex-end">
         <button id="shareQr" class="btn primary">Share</button>
@@ -180,11 +181,13 @@
     </div>
   </div>
 
-  <!-- WhatsApp name prompt (first time only) -->
+  <!-- Name modal (used for WhatsApp only, every time) -->
   <div id="nameModal" class="backdrop" aria-hidden="true">
     <div class="dialog" role="dialog" aria-modal="true">
-      <h3 style="margin:0 0 8px 0">Your Name (for WhatsApp)</h3>
-      <div class="row"><input id="userNameInput" placeholder="e.g. Rahul Sharma" /></div>
+      <h3 style="margin:0 0 8px 0">Enter your name</h3>
+      <div class="row" style="gap:8px">
+        <input id="userNameInput" placeholder="e.g. Rahul Sharma" style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.1)" />
+      </div>
       <div class="row" style="justify-content:flex-end">
         <button id="nameCancel" class="btn ghost">Cancel</button>
         <button id="nameOk" class="btn primary">Continue</button>
@@ -206,7 +209,7 @@ document.querySelectorAll('.icon, .big-btn, .s').forEach(el=>{
   el.addEventListener('pointerleave',()=> el.style.transform='');
 });
 
-/* ===== Contact info (as requested) ===== */
+/* ===== Contact info ===== */
 const CONTACT={
   fn:'Lokesh Chhalani',
   tel:'+919099963239',
@@ -218,6 +221,7 @@ const CONTACT={
   photoPath:'images/logo.png'
 };
 
+/* ---------- Save Contact (.vcf) ---------- */
 async function saveContactVcf(){
   let photoB64='';
   try{
@@ -247,73 +251,77 @@ async function saveContactVcf(){
   try{ navigator.vibrate && navigator.vibrate(30);}catch(e){}
 }
 
-/* ===== Quick actions ===== */
 document.getElementById('saveContactBtn').addEventListener('click',e=>{e.preventDefault(); saveContactVcf();});
+
+/* ---------- Quick actions ---------- */
 document.getElementById('callIcon').addEventListener('click',()=> location.href='tel:'+CONTACT.tel);
 document.getElementById('locIcon').addEventListener('click',()=> window.open('https://maps.app.goo.gl/UzFL7CHn1MtZNGX38','_blank'));
 document.getElementById('mailIcon').addEventListener('click',()=> location.href=('mailto:'+CONTACT.email));
 document.getElementById('webIcon').addEventListener('click',()=> window.open(CONTACT.url,'_blank'));
 
-/* ===== QR modal ===== */
-const qrModal=document.getElementById('qrModal');
-document.getElementById('qrOpenBtn').addEventListener('click',e=>{e.preventDefault(); qrModal.style.display='flex'; qrModal.setAttribute('aria-hidden','false');});
-document.getElementById('closeQr').addEventListener('click',()=>{ qrModal.style.display='none'; qrModal.setAttribute('aria-hidden','true');});
-document.getElementById('shareQr').addEventListener('click',async()=>{
-  try{const r=await fetch('images/qr.png'); if(!r.ok) throw 0; const b=await r.blob(); const f=new File([b],'qr.png',{type:b.type});
-      if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title:'Kirti Creations QR'});}
-      else{ const u=URL.createObjectURL(b); window.open(u,'_blank'); setTimeout(()=>URL.revokeObjectURL(u),2000); }
-  }catch{ alert('QR not found'); }
-});
-
-/* ===== WhatsApp with name prompt ===== */
+/* ---------- WhatsApp (ask name EVERY time) ---------- */
 const WA_NUMBER='919099963239';
 const nameModal=document.getElementById('nameModal');
 const nameInput=document.getElementById('userNameInput');
-function openWA(name){ const msg=`Hey ${name||'there'}, I want to discuss embroidery work with Kirti Creations.`; window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank'); }
+let afterNameAction=null;
+
+function askNameThen(callback){
+  afterNameAction = callback;
+  nameInput.value='';                 // always clear
+  nameModal.style.display='flex';
+  nameModal.setAttribute('aria-hidden','false');
+}
+
 document.getElementById('waIcon').addEventListener('click',()=>{
-  const saved=localStorage.getItem('kc_user_name'); if(saved&&saved.trim()){ openWA(saved.trim()); }
-  else{ nameInput.value=''; nameModal.style.display='flex'; nameModal.setAttribute('aria-hidden','false'); }
-});
-document.getElementById('nameCancel').addEventListener('click',()=>{ nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true'); });
-document.getElementById('nameOk').addEventListener('click',()=>{
-  const v=(nameInput.value||'').trim(); if(v) localStorage.setItem('kc_user_name',v);
-  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true'); openWA(v);
+  askNameThen((name)=>{
+    const n = (name||'User').trim() || 'User';
+    const msg = `Hi, my name is "${n}", I am talking with you about Embroidery Design and Creations.`;
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+  });
 });
 
-/* ===== Telegram (moved to socials row) ===== */
-document.getElementById('tgIcon').addEventListener('click', async ()=>{
-  const msg = 'Hi, I would like to discuss embroidery designs with Kirti Creations.';
-  try{ await navigator.clipboard.writeText(msg); }catch(e){}
+document.getElementById('nameCancel').addEventListener('click',()=>{
+  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true');
+  afterNameAction=null;
+});
+document.getElementById('nameOk').addEventListener('click',()=>{
+  const v=(nameInput.value||'').trim();
+  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true');
+  if(typeof afterNameAction==='function'){ afterNameAction(v); }
+  afterNameAction=null;
+});
+
+/* ---------- QR modal + Share (fixed message, no name prompt) ---------- */
+const qrModal=document.getElementById('qrModal');
+document.getElementById('qrOpenBtn').addEventListener('click',e=>{
+  e.preventDefault(); qrModal.style.display='flex'; qrModal.setAttribute('aria-hidden','false');
+});
+document.getElementById('closeQr').addEventListener('click',()=>{
+  qrModal.style.display='none'; qrModal.setAttribute('aria-hidden','true');
+});
+
+document.getElementById('shareQr').addEventListener('click',async()=>{
+  try{
+    const resp=await fetch('qr.jpg', {cache:'reload'}); if(!resp.ok) throw 0;
+    const blob=await resp.blob(); const file=new File([blob],'kirti-qr.jpg',{type:blob.type});
+    const shareText = 'This is the QR of the Digital Business Card of the Managing Director of Kirti Creations.';
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({ files:[file], title:'Kirti Creations — Digital Business Card', text:shareText });
+    } else if (navigator.share){
+      await navigator.share({ title:'Kirti Creations — Digital Business Card', text:shareText });
+    } else {
+      const url=URL.createObjectURL(blob); window.open(url,'_blank'); setTimeout(()=>URL.revokeObjectURL(url),2000);
+      alert(shareText);
+    }
+  }catch{ alert('QR not found. Keep file at ./qr.jpg'); }
+});
+
+/* ---------- Telegram ---------- */
+document.getElementById('tgIcon').addEventListener('click',()=>{
   const deep='tg://resolve?domain=lokeshchhalani'; const web='https://t.me/lokeshchhalani';
   const a=document.createElement('a'); a.href=deep; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=> window.open(web,'_blank'), 400);
 });
-
-/* ===== Tagline auto-fit to single line (phones) ===== */
-function fitTagline(){
-  const box = document.querySelector('.company-msg');
-  const el  = document.getElementById('companyTagline');
-  if(!box || !el) return;
-
-  // reset to a safe default first
-  el.style.fontSize = '13px';
-  el.style.lineHeight = '1.2';
-
-  let size = parseFloat(getComputedStyle(el).fontSize);
-  const min  = 9;         // don't go below 9px for legibility
-
-  // shrink until it fits in one line (no horizontal scroll)
-  while ((el.scrollWidth > box.clientWidth) && size > min){
-    size -= 0.5;
-    el.style.fontSize = size + 'px';
-  }
-}
-
-function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
-
-window.addEventListener('load', fitTagline);
-window.addEventListener('resize', debounce(fitTagline, 120));
-window.addEventListener('orientationchange', debounce(fitTagline, 120));
 
 /* socials bounce */
 ['sInstagram','sFacebook','sLinkedin','tgIcon'].forEach(id=>{
