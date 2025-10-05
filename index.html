@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -150,7 +150,7 @@
       <!-- actions -->
       <div class="actions-col">
         <a class="big-btn primary" id="saveContactBtn" href="#"><img src="images/contact.png" alt="save" /> Save Contact</a>
-        <!-- QR icon uses root file qr.jpg -->
+        <!-- QR icon now uses root file qr.jpg -->
         <a class="big-btn ghost" id="qrOpenBtn" href="#"><img src="qr.jpg" alt="qr" /> Show QR / Share</a>
       </div>
 
@@ -181,10 +181,10 @@
     </div>
   </div>
 
-  <!-- Name modal (used for WhatsApp only, every time) -->
+  <!-- One modal to capture name (used by WA & QR sharing) -->
   <div id="nameModal" class="backdrop" aria-hidden="true">
     <div class="dialog" role="dialog" aria-modal="true">
-      <h3 style="margin:0 0 8px 0">Enter your name</h3>
+      <h3 style="margin:0 0 8px 0">Your Name</h3>
       <div class="row" style="gap:8px">
         <input id="userNameInput" placeholder="e.g. Rahul Sharma" style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.1)" />
       </div>
@@ -220,6 +220,33 @@ const CONTACT={
   address:'Kirti Creations, F-128-129 Laxmi Narayan industrial park, BRC compound, Udhana, Surat, Gujarat 394210',
   photoPath:'images/logo.png'
 };
+
+/* ---------- Name storage helper ---------- */
+let pendingAction = null; // callback
+const NAME_KEY = 'kc_user_name';
+const nameModal = document.getElementById('nameModal');
+const nameInput = document.getElementById('userNameInput');
+
+function ensureNameAnd(callback){
+  const saved = localStorage.getItem(NAME_KEY);
+  if(saved && saved.trim()){
+    callback(saved.trim());
+  } else {
+    pendingAction = callback;
+    nameInput.value = '';
+    nameModal.style.display='flex'; nameModal.setAttribute('aria-hidden','false');
+  }
+}
+
+document.getElementById('nameCancel').addEventListener('click',()=>{
+  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true');
+});
+document.getElementById('nameOk').addEventListener('click',()=>{
+  const v=(nameInput.value||'').trim();
+  if(v){ localStorage.setItem(NAME_KEY, v); }
+  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true');
+  if(typeof pendingAction === 'function'){ pendingAction(v || ''); pendingAction=null; }
+});
 
 /* ---------- Save Contact (.vcf) ---------- */
 async function saveContactVcf(){
@@ -259,39 +286,17 @@ document.getElementById('locIcon').addEventListener('click',()=> window.open('ht
 document.getElementById('mailIcon').addEventListener('click',()=> location.href=('mailto:'+CONTACT.email));
 document.getElementById('webIcon').addEventListener('click',()=> window.open(CONTACT.url,'_blank'));
 
-/* ---------- WhatsApp (ask name EVERY time) ---------- */
+/* ---------- WhatsApp (one-time name, stored) ---------- */
 const WA_NUMBER='919099963239';
-const nameModal=document.getElementById('nameModal');
-const nameInput=document.getElementById('userNameInput');
-let afterNameAction=null;
-
-function askNameThen(callback){
-  afterNameAction = callback;
-  nameInput.value='';                 // always clear
-  nameModal.style.display='flex';
-  nameModal.setAttribute('aria-hidden','false');
+function openWA(name){
+  const msg = `Hi, my name is "${name||'User'}", I am talking with you about Embroidery Design and Creations.`;
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
 }
-
 document.getElementById('waIcon').addEventListener('click',()=>{
-  askNameThen((name)=>{
-    const n = (name||'User').trim() || 'User';
-    const msg = `Hi, my name is "${n}", I am talking with you about Embroidery Design and Creations.`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
-  });
+  ensureNameAnd(openWA);
 });
 
-document.getElementById('nameCancel').addEventListener('click',()=>{
-  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true');
-  afterNameAction=null;
-});
-document.getElementById('nameOk').addEventListener('click',()=>{
-  const v=(nameInput.value||'').trim();
-  nameModal.style.display='none'; nameModal.setAttribute('aria-hidden','true');
-  if(typeof afterNameAction==='function'){ afterNameAction(v); }
-  afterNameAction=null;
-});
-
-/* ---------- QR modal + Share (fixed message, no name prompt) ---------- */
+/* ---------- QR modal + Share: uses root qr.jpg and saved name ---------- */
 const qrModal=document.getElementById('qrModal');
 document.getElementById('qrOpenBtn').addEventListener('click',e=>{
   e.preventDefault(); qrModal.style.display='flex'; qrModal.setAttribute('aria-hidden','false');
@@ -300,21 +305,21 @@ document.getElementById('closeQr').addEventListener('click',()=>{
   qrModal.style.display='none'; qrModal.setAttribute('aria-hidden','true');
 });
 
-document.getElementById('shareQr').addEventListener('click',async()=>{
+async function shareQrWithName(name){
   try{
     const resp=await fetch('qr.jpg', {cache:'reload'}); if(!resp.ok) throw 0;
     const blob=await resp.blob(); const file=new File([blob],'kirti-qr.jpg',{type:blob.type});
-    const shareText = 'This is the QR of the Digital Business Card of the Managing Director of Kirti Creations.';
+    const shareText = `Hi, my name is "${name||'User'}". This is the Digital Business Card of Lokesh Chhalani (Kirti Creations).`;
     if(navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({ files:[file], title:'Kirti Creations — Digital Business Card', text:shareText });
     } else if (navigator.share){
       await navigator.share({ title:'Kirti Creations — Digital Business Card', text:shareText });
     } else {
       const url=URL.createObjectURL(blob); window.open(url,'_blank'); setTimeout(()=>URL.revokeObjectURL(url),2000);
-      alert(shareText);
     }
   }catch{ alert('QR not found. Keep file at ./qr.jpg'); }
-});
+}
+document.getElementById('shareQr').addEventListener('click',()=>{ ensureNameAnd(shareQrWithName); });
 
 /* ---------- Telegram ---------- */
 document.getElementById('tgIcon').addEventListener('click',()=>{
