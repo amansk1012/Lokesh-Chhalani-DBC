@@ -1,4 +1,4 @@
- <!doctype html>
+  <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -66,11 +66,17 @@
   .title{font-size:13.5px; margin:4px 0 0; color:var(--muted); font-weight:800; letter-spacing:.2px}
 
   /* tagline */
-  .company-msg{
-    font-size:13px; color:#0b0b0b; font-weight:800;
-    background:#ffffff; padding:8px 12px; border-radius:11px;
-    border:0.1px solid rgba(249, 9, 9, 0.5);
-  }
+.company-msg{
+  font-size:14px; font-weight:800;
+  color:#0b0b0b; background:#ffffff;
+  padding:8px 12px; border-radius:11px;
+  border:0.1px solid rgba(189, 35, 35, 0.5);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
   .company-msg .reveal{ display:inline-block; transform:translateY(10px); opacity:0; animation:revealUp .8s ease forwards; }
   @keyframes revealUp{to{transform:translateY(0);opacity:1}}
 
@@ -136,7 +142,7 @@
       </div>
 
       <!-- tagline -->
-      <div class="company-msg"><span class="reveal">Embroidery &amp; Textile Design — Quality &amp; Craftsmanship</span></div>
+     <span class="company-msg">Embroidery &amp; Textile Design — Quality &amp; Craftsmanship</span>
 
       <!-- quick icons -->
       <div class="icon-row">
@@ -289,7 +295,8 @@ document.getElementById('webIcon').addEventListener('click',()=> window.open(CON
 /* ---------- WhatsApp (one-time name, stored) ---------- */
 const WA_NUMBER='919099963239';
 function openWA(name){
-  const msg = `Hi, my name is "${name||'User'}", I am talking with you about Embroidery Design and Creations.`;
+const msg = `Hi, my name is "${name||'User'}", I am talking with you about Embroidery Design and Creations.`;
+
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 document.getElementById('waIcon').addEventListener('click',()=>{
